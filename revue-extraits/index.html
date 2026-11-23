@@ -51,7 +51,7 @@ main{max-width:1500px;margin:0 auto;padding:14px 12px calc(40px + env(safe-area-
 .entete-table{display:none}
 .liste{display:flex;flex-direction:column;gap:12px}
 .extrait{background:var(--carte);border-radius:var(--rayon);box-shadow:var(--ombre);padding:14px 14px 12px;display:grid;
-  grid-template-columns:auto 1fr auto;grid-template-areas:"num qui statut" "slogan slogan slogan" "lien lien lien" "valid valid valid" "date date date" "rem rem rem";column-gap:10px}
+  grid-template-columns:auto 1fr auto;grid-template-areas:"num qui statut" "slogan slogan slogan" "lien lien lien" "date date date" "valid valid valid" "rem rem rem";column-gap:10px}
 .num{grid-area:num;font:800 22px/1 Georgia,serif;color:var(--carmin);padding-top:2px}
 .qui{grid-area:qui;font-weight:700;font-size:16px;align-self:center}
 .statut{grid-area:statut;align-self:center}
@@ -132,7 +132,7 @@ details.rem[open] summary .fl{transform:rotate(180deg)}
   main{padding:18px 24px 50px}
   .intro{display:flex;align-items:center;justify-content:space-between;gap:20px}
   .intro p{margin:0}
-  .entete-table,.extrait{display:grid;grid-template-columns:54px minmax(230px,1.25fr) 128px minmax(300px,1.55fr) 170px minmax(280px,1.4fr);grid-template-areas:"num video statut valid date rem";column-gap:0}
+  .entete-table,.extrait{display:grid;grid-template-columns:54px minmax(230px,1.25fr) 128px 170px minmax(300px,1.55fr) minmax(280px,1.4fr);grid-template-areas:"num video statut date valid rem";column-gap:0}
   .entete-table{position:sticky;top:var(--haut,108px);z-index:10;background:var(--encre);color:#fff;border-radius:12px 12px 0 0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
   .entete-table div{padding:11px 12px}
   .liste{gap:0;background:var(--carte);border-radius:0 0 12px 12px;box-shadow:var(--ombre);overflow:hidden}
@@ -295,7 +295,7 @@ function rendre() {
       el("a", { class: "bouton plein", href: DONNEES.liens.entretien, target: "_blank", rel: "noopener" }, svg(ICONES.film), "Lien vers l’entretien complet"),
       el("a", { class: "bouton", href: DONNEES.liens.transcription, target: "_blank", rel: "noopener" }, svg(ICONES.doc), "Lien vers la transcription")));
   const entete = el("div", { class: "entete-table", "aria-hidden": "true" },
-    ["N°", "Vidéo et slogan", "Statut", "Validation ?", "Date de publication", "Remarques et modifications"].map(t => el("div", {}, t)));
+    ["N°", "Vidéo et slogan", "Statut", "Date de publication", "Validation ?", "Remarques et modifications"].map(t => el("div", {}, t)));
   const liste = el("div", { class: "liste" }, extraits.map(carte));
   if (!extraits.length) liste.append(el("p", { class: "vide-note", style: "padding:16px" }, "Aucun extrait avec ce statut."));
   const maj = el("div", { class: "maj", id: "maj" }, "À jour ", el("button", { type: "button", onclick: () => charger() }, "actualiser"));
@@ -373,8 +373,8 @@ function carte(x) {
       el("div", { class: "slogan" }, "— " + x.slogan),
       el("div", { class: "lien" }, lien)),
     el("div", { class: "statut" }, el("span", { class: "pastille " + classeStatut(x.statut) }, x.statut)),
-    el("div", { class: "valid bloc" }, el("div", { class: "etiquette mobile" }, el("span", {}, "Validation ? ", el("span", { class: "nb" }, st.valid.length))), notes, el("div", { class: "saisie" }, zone, bouton), prefixe),
     el("div", { class: "date bloc" }, el("div", { class: "etiquette mobile" }, el("span", {}, "Date de publication")), dateBloc, auteurDate),
+    el("div", { class: "valid bloc" }, el("div", { class: "etiquette mobile" }, el("span", {}, "Validation ? ", el("span", { class: "nb" }, st.valid.length))), notes, el("div", { class: "saisie" }, zone, bouton), prefixe),
     remarques);
 }
 
@@ -384,6 +384,7 @@ async function envoyer(t, n, texte) {
   try {
     await api(`/issues/${TICKET}/comments`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body: JSON.stringify({ v: 1, t, n, qui: QUI, texte }) }) });
     toast(t === "date" ? "Date enregistrée" : "Remarque enregistrée, signée [" + QUI + "]");
+    if (t === "valid") { BROUILLONS[n] = ""; const z = document.querySelector(`textarea[data-n="${n}"]`); if (z) z.value = ""; }
     await chargerEvenements(); rendre();
     return true;
   } catch (e) {
