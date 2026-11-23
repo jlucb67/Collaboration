@@ -63,7 +63,7 @@ main{max-width:1500px;margin:0 auto;padding:12px 12px calc(40px + env(safe-area-
 .voir:hover{text-decoration:underline;text-underline-offset:3px}
 .voir svg{width:11px;height:11px}
 .construire{display:inline-block;margin-top:6px;border:1px dashed var(--gris-clair);color:var(--gris);border-radius:6px;padding:1px 7px;font-size:12px}
-.statut{grid-area:statut;align-self:center;margin-bottom:6px}
+.statut{grid-area:statut;align-self:center;margin-bottom:6px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:5px}
 .pastille{display:inline-flex;align-items:flex-start;gap:6px;border-radius:999px;padding:3px 10px 3px 8px;font-size:12.5px;font-weight:600;line-height:1.3}
 .pastille::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none;margin-top:.45em}
 .p-prete{background:var(--vert-pale);color:var(--vert)}
@@ -153,6 +153,7 @@ details.rem[open] summary .fl{transform:rotate(180deg)}
   .slogan{margin:8px 0 4px;font-size:16.5px}
   .lien{margin:0}
   .statut,.date{align-self:stretch;margin:0}
+  .statut{flex-direction:column;flex-wrap:nowrap}
   .pastille{border-radius:12px}
   .date-lab{display:none}
   .date-ligne{flex-direction:column;align-items:flex-start;gap:0}
@@ -286,6 +287,7 @@ function afficherInfo(titre, texte) {
   $("#contenu").replaceChildren(el("div", { class: "info" }, el("h2", {}, titre), el("p", {}, texte)));
 }
 
+const statutsDe = x => Array.isArray(x.statut) ? x.statut : [x.statut];
 const classeStatut = s => ({ "Prête": "p-prete", "À traiter": "p-traiter", "En cours": "p-cours", "Ne pas publier": "p-non", "Remarques prises en compte": "p-prises" })[s] || "p-traiter";
 const quand = iso => { const d = new Date(iso); return d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" }) + " à " + d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); };
 const initiales = p => p.split(/\s+/).map(m => m.charAt(0)).join("").slice(0, 2).toUpperCase();
@@ -305,7 +307,7 @@ function rendre() {
   const b = $("#btn-moi"); b.classList.remove("cache"); $("#moi-ini").textContent = QUI ? QUI : "Qui suis-je ?";
   rendreFiltres();
   const ouvert = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.n : null;
-  const extraits = DONNEES.extraits.filter(x => FILTRE === "Tous" || x.statut === FILTRE);
+  const extraits = DONNEES.extraits.filter(x => FILTRE === "Tous" || statutsDe(x).includes(FILTRE));
   const intro = el("section", { class: "intro" },
     el("p", {}, DONNEES.sous_titre),
     el("div", { class: "liens" },
@@ -330,7 +332,7 @@ function rendre() {
 function rendreFiltres() {
   const f = $("#filtres"); f.classList.remove("cache");
   const comptes = { "Tous": DONNEES.extraits.length };
-  for (const s of DONNEES.statuts) comptes[s] = DONNEES.extraits.filter(x => x.statut === s).length;
+  for (const s of DONNEES.statuts) comptes[s] = DONNEES.extraits.filter(x => statutsDe(x).includes(s)).length;
   f.replaceChildren(...Object.entries(comptes).map(([s, nb]) =>
     el("button", { class: "filtre", type: "button", "aria-pressed": String(FILTRE === s), onclick: () => { FILTRE = s; ecrire(CLES.filtre, s); rendre(); window.scrollTo({ top: 0 }); } }, s, el("b", {}, nb))));
 }
@@ -392,7 +394,7 @@ function carte(x) {
       el("div", { class: "slogan" }, x.slogan),
       el("div", { class: "lien" }, lien)),
     // 2) statut
-    el("div", { class: "statut" }, el("span", { class: "pastille " + classeStatut(x.statut) }, x.statut)),
+    el("div", { class: "statut" }, statutsDe(x).map(s => el("span", { class: "pastille " + classeStatut(s) }, s))),
     // 3) date
     el("div", { class: "date" }, dateBloc, auteurDate),
     el("div", { class: "valid bloc" }, el("div", { class: "etiquette mobile" }, el("span", {}, "Validation ? ", el("span", { class: "nb" }, st.valid.length))), notes, el("div", { class: "saisie" }, zone, bouton)),
