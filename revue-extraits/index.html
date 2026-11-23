@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#85252F">
+<title>Revue des extraits</title>
+<style>
+:root{
+  --fond:#F4F4F6; --carte:#FFFFFF; --encre:#17181B; --gris:#5B5E66; --gris-clair:#8A8C93; --filet:#E3E3E7;
+  --carmin:#85252F; --carmin-pale:#F8EEEF; --carmin-clair:#B8434F;
+  --vert:#1E7A46; --vert-pale:#E6F4EC; --bleu:#1F5FA8; --bleu-pale:#E8F0FA; --ambre:#9A6200; --ambre-pale:#FDF2DD;
+  --rouge:#B3261E; --rouge-pale:#FBE9E8;
+  --rayon:14px; --ombre:0 1px 2px rgba(23,24,27,.06),0 4px 14px rgba(23,24,27,.05);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fond);color:var(--encre);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--carmin)}
+button,input,textarea{font:inherit;color:inherit}
+.cache{display:none!important}
+
+/* ---------- en-tête ---------- */
+header{position:sticky;top:0;z-index:20;background:rgba(244,244,246,.94);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--filet);padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top))}
+.barre{display:flex;align-items:center;gap:10px;max-width:1500px;margin:0 auto}
+.marque{flex:1;min-width:0}
+.sur{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+h1{margin:1px 0 0;font:700 18px/1.2 Georgia,"Times New Roman",serif}
+.moi{flex:none;display:flex;align-items:center;gap:6px;border:1.5px solid var(--carmin);background:var(--carte);color:var(--carmin);border-radius:999px;padding:7px 12px;font-weight:700;font-size:15px;min-height:40px;cursor:pointer}
+.moi small{font-weight:500;color:var(--gris)}
+.filtres{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;max-width:1500px;margin:10px auto 0;padding-bottom:2px}
+.filtres::-webkit-scrollbar{display:none}
+.filtre{flex:none;border:1px solid var(--filet);background:var(--carte);border-radius:999px;padding:7px 13px;font-size:14px;min-height:36px;cursor:pointer;white-space:nowrap}
+.filtre b{font-weight:700;margin-left:4px;color:var(--gris)}
+.filtre[aria-pressed="true"]{background:var(--encre);border-color:var(--encre);color:#fff}
+.filtre[aria-pressed="true"] b{color:#fff}
+
+main{max-width:1500px;margin:0 auto;padding:14px 12px calc(40px + env(safe-area-inset-bottom))}
+
+/* ---------- bloc du haut ---------- */
+.intro{background:var(--carte);border-radius:var(--rayon);box-shadow:var(--ombre);padding:16px;margin-bottom:14px;border-left:5px solid var(--carmin)}
+.intro p{margin:0 0 12px;color:var(--gris);font-size:14.5px}
+.liens{display:flex;flex-wrap:wrap;gap:10px}
+.bouton{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:12px;padding:11px 14px;font-weight:600;font-size:15px;min-height:46px;border:1.5px solid var(--carmin);color:var(--carmin);background:var(--carte)}
+.bouton.plein{background:var(--carmin);color:#fff}
+.bouton svg{width:18px;height:18px;flex:none}
+
+/* ---------- extraits ---------- */
+.entete-table{display:none}
+.liste{display:flex;flex-direction:column;gap:12px}
+.extrait{background:var(--carte);border-radius:var(--rayon);box-shadow:var(--ombre);padding:14px 14px 12px;display:grid;
+  grid-template-columns:auto 1fr auto;grid-template-areas:"num qui statut" "slogan slogan slogan" "lien lien lien" "valid valid valid" "date date date" "rem rem rem";column-gap:10px}
+.num{grid-area:num;font:800 22px/1 Georgia,serif;color:var(--carmin);padding-top:2px}
+.qui{grid-area:qui;font-weight:700;font-size:16px;align-self:center}
+.statut{grid-area:statut;align-self:center}
+.pastille{display:inline-block;border-radius:8px;padding:4px 9px;font-size:13px;font-weight:700;white-space:nowrap}
+.p-prete{background:var(--vert-pale);color:var(--vert)}
+.p-traiter{background:var(--bleu-pale);color:var(--bleu)}
+.p-cours{background:var(--ambre-pale);color:var(--ambre)}
+.p-non{background:var(--rouge-pale);color:var(--rouge)}
+.slogan{grid-area:slogan;margin:8px 0 10px;font-size:16px;line-height:1.4}
+.lien{grid-area:lien;margin-bottom:12px}
+.voir{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-decoration:none;background:var(--carmin);color:#fff;border-radius:12px;padding:11px 14px;font-weight:700;min-height:46px}
+.voir svg{width:18px;height:18px}
+.construire{display:flex;align-items:center;justify-content:center;width:100%;border:1.5px dashed var(--gris-clair);color:var(--gris);border-radius:12px;padding:10px 14px;font-weight:600;min-height:46px}
+.bloc{border-top:1px solid var(--filet);padding-top:10px;margin-top:2px}
+.date{grid-area:date}.valid{grid-area:valid}.rem{grid-area:rem}
+.etiquette{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);font-weight:700;margin-bottom:6px}
+.etiquette .nb{background:var(--fond);border-radius:999px;padding:1px 8px;letter-spacing:0;text-transform:none;font-weight:600}
+.date-ligne{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.date-val{flex:1;min-width:0;font-weight:600;font-size:16px}
+.date-val.vide{color:var(--gris-clair);font-weight:400}
+.date-auteur{font-size:12px;color:var(--gris-clair)}
+.petit{border:1px solid var(--filet);background:var(--carte);border-radius:10px;padding:7px 11px;font-size:14px;min-height:38px;cursor:pointer}
+.date-form{display:flex;gap:8px;margin-bottom:10px}
+.date-form input{flex:1;min-width:0;border:1.5px solid var(--carmin);border-radius:10px;padding:9px 11px;font-size:16px;min-height:44px;background:#fff}
+ul.notes{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.notes li{background:var(--fond);border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.4;position:relative}
+ul.notes li .ini{font-weight:800;color:var(--carmin)}
+ul.notes li .quand{display:block;font-size:12px;color:var(--gris-clair);margin-top:2px}
+ul.notes li.moi-note{background:var(--carmin-pale)}
+ul.notes li .suppr{position:absolute;top:4px;right:4px;border:0;background:transparent;color:var(--gris-clair);font-size:20px;line-height:1;width:34px;height:34px;border-radius:8px;cursor:pointer}
+ul.notes li.moi-note{padding-right:38px}
+.vide-note{color:var(--gris-clair);font-size:14px;margin:0 0 8px}
+.saisie{display:flex;gap:8px;align-items:flex-end}
+.saisie textarea{flex:1;min-width:0;resize:none;border:1.5px solid var(--filet);border-radius:12px;padding:10px 11px;font-size:16px;line-height:1.35;min-height:46px;max-height:180px;background:#fff}
+.saisie textarea:focus,.date-form input:focus{outline:none;border-color:var(--carmin);box-shadow:0 0 0 3px var(--carmin-pale)}
+.envoyer{flex:none;border:0;background:var(--carmin);color:#fff;border-radius:12px;width:48px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.envoyer[disabled]{opacity:.45;cursor:default}
+.envoyer svg{width:20px;height:20px}
+.prefixe{font-size:12px;color:var(--gris);margin:4px 2px 0}
+ul.rems{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+ul.rems li{font-size:14.5px;color:#33353B;padding-left:12px;position:relative}
+ul.rems li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--gris-clair)}
+details.rem summary{list-style:none;cursor:pointer}
+details.rem summary::-webkit-details-marker{display:none}
+details.rem summary .fl{transition:transform .15s}
+details.rem[open] summary .fl{transform:rotate(180deg)}
+
+/* ---------- remarques transversales ---------- */
+.transv{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}
+.transv h2{grid-column:1/-1;font:700 15px/1.2 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:6px 4px 0;color:var(--gris)}
+.carte-t{background:var(--carte);border-radius:var(--rayon);box-shadow:var(--ombre);padding:14px 16px;border-top:4px solid var(--carmin)}
+.carte-t h3{margin:0 0 8px;font-size:16px}
+.note-bas{font-size:13px;color:var(--gris);margin:16px 4px 0}
+
+/* ---------- fenêtres ---------- */
+.voile{position:fixed;inset:0;z-index:50;background:rgba(23,24,27,.45);display:flex;align-items:flex-end;justify-content:center}
+.fenetre{background:var(--carte);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.18)}
+.fenetre h2{margin:0 0 4px;font:700 21px/1.2 Georgia,serif}
+.fenetre p{margin:0 0 16px;color:var(--gris);font-size:15px}
+.choix{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choix button{border:1.5px solid var(--filet);background:var(--fond);border-radius:14px;padding:14px 10px;min-height:68px;cursor:pointer;text-align:left}
+.choix button b{display:block;font-size:20px;color:var(--carmin)}
+.choix button span{font-size:14px;color:var(--gris)}
+.choix button[aria-pressed="true"]{border-color:var(--carmin);background:var(--carmin-pale)}
+.info{max-width:560px;margin:60px auto;padding:24px;background:var(--carte);border-radius:var(--rayon);box-shadow:var(--ombre);text-align:center}
+.info h2{font:700 20px Georgia,serif;margin:0 0 8px}
+.info p{color:var(--gris);margin:0}
+.chargement{text-align:center;color:var(--gris);padding:50px 0}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(30px);opacity:0;background:var(--encre);color:#fff;padding:11px 16px;border-radius:12px;font-size:15px;z-index:60;transition:.2s;max-width:calc(100% - 32px);text-align:center;pointer-events:none}
+.toast.ok{opacity:1;transform:translateX(-50%) translateY(0)}
+.maj{font-size:12px;color:var(--gris-clair);text-align:right;margin:4px 4px 8px}
+.maj button{border:0;background:none;color:var(--carmin);font-size:12px;text-decoration:underline;cursor:pointer;padding:4px}
+
+/* ---------- ordinateur : un vrai tableau ---------- */
+@media (min-width:1000px){
+  header{padding-left:24px;padding-right:24px}
+  h1{font-size:22px}
+  main{padding:18px 24px 50px}
+  .intro{display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .intro p{margin:0}
+  .entete-table,.extrait{display:grid;grid-template-columns:54px minmax(230px,1.25fr) 128px minmax(300px,1.55fr) 170px minmax(280px,1.4fr);grid-template-areas:"num video statut valid date rem";column-gap:0}
+  .entete-table{position:sticky;top:var(--haut,108px);z-index:10;background:var(--encre);color:#fff;border-radius:12px 12px 0 0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+  .entete-table div{padding:11px 12px}
+  .liste{gap:0;background:var(--carte);border-radius:0 0 12px 12px;box-shadow:var(--ombre);overflow:hidden}
+  .extrait{border-radius:0;box-shadow:none;padding:0;border-top:1px solid var(--filet)}
+  .extrait:nth-child(even){background:#FAFAFB}
+  .extrait>*{padding:13px 12px;border-left:1px solid var(--filet)}
+  .extrait>.num{border-left:0;padding-top:14px}
+  .video-cell{grid-area:video;display:flex;flex-direction:column}
+  .qui,.slogan,.lien{grid-area:auto}
+  .num{font-size:20px}
+  .slogan{margin:4px 0 8px;font-size:14.5px}
+  .lien{margin:0}
+  .voir,.construire{width:auto;display:inline-flex;min-height:36px;padding:6px 12px;font-size:14px;border-radius:9px}
+  .statut{align-self:stretch}
+  .qui{align-self:auto}
+  .date-ligne{flex-direction:column;align-items:flex-start;gap:6px}
+  .date-ligne .petit{min-height:32px;padding:4px 10px;font-size:13px}
+  .bloc{border-top:0;margin:0}
+  .etiquette.mobile{display:none}
+  ul.notes li{font-size:14px}
+  .saisie textarea,.date-form input{font-size:14.5px}
+  .date-ligne{flex-wrap:wrap}
+  ul.rems li{font-size:14px}
+  details.rem summary{pointer-events:none}
+  details.rem summary .fl{display:none}
+  .transv{grid-template-columns:1fr 1fr}
+  .voile{align-items:center}
+  .fenetre{border-radius:20px}
+}
+@media (max-width:999px){ .video-cell{display:contents} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header id="haut">
+  <div class="barre">
+    <div class="marque"><div class="sur">Revue des extraits</div><h1 id="titre">Appel de Juifs·ves de France</h1></div>
+    <button class="moi cache" id="btn-moi" type="button" aria-label="Changer d’identité"><span id="moi-ini"></span><small aria-hidden="true">▾</small></button>
+  </div>
+  <div class="filtres cache" id="filtres" role="toolbar" aria-label="Filtrer par statut"></div>
+</header>
+<main id="contenu"><div class="chargement">Chargement…</div></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* Revue des extraits — page publique, code seul, aucune donnée.
+   Les données sont dans le dépôt privé jlucb67/DEPOT-COLLABORATION,
+   lues avec la clé contenue dans le lien envoyé au collectif (#cle=…).
+   Chaque remarque, validation ou date est un commentaire du ticket n°1. */
+const DEPOT = "jlucb67/DEPOT-COLLABORATION";
+const TICKET = 1;
+const API = "https://api.github.com/repos/" + DEPOT;
+const CLES = {cle: "revue_cle", qui: "revue_qui", filtre: "revue_filtre"};
+
+const lire = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const ecrire = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+/* La clé arrive dans le lien, après « # » : elle n'est jamais envoyée au serveur de la page.
+   On la garde dans le navigateur, puis on l'efface de la barre d'adresse. */
+(function () {
+  const m = location.hash.match(/cle=([A-Za-z0-9_]+)/);
+  if (m) { ecrire(CLES.cle, m[1]); history.replaceState(null, "", location.pathname + location.search); }
+})();
+let CLE = lire(CLES.cle);
+let QUI = lire(CLES.qui);
+let DONNEES = null, EVENEMENTS = [], FILTRE = lire(CLES.filtre) || "Tous", BROUILLONS = {}, EDITION_DATE = null;
+
+const $ = s => document.querySelector(s);
+const el = (tag, attrs, ...enfants) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === "class") e.className = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of enfants.flat()) if (c != null && c !== false) e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return e;
+};
+const svg = d => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor"); s.setAttribute("stroke-width", "2"); s.setAttribute("stroke-linecap", "round"); s.setAttribute("stroke-linejoin", "round"); s.setAttribute("aria-hidden", "true"); s.innerHTML = d; return s; };
+const ICONES = {
+  play: '<polygon points="7 4 20 12 7 20 7 4"/>',
+  film: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  envoi: '<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>'
+};
+
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("ok"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("ok"), 2600); }
+
+async function api(chemin, opts = {}) {
+  const r = await fetch(API + chemin, Object.assign({}, opts, {
+    headers: Object.assign({ "Authorization": "Bearer " + CLE, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }, opts.headers || {}),
+    cache: "no-store"
+  }));
+  if (r.status === 401 || r.status === 403 || r.status === 404) { const e = new Error("acces"); e.code = r.status; throw e; }
+  if (!r.ok) throw new Error("http " + r.status);
+  return r.status === 204 ? null : (opts.brut ? r.text() : r.json());
+}
+
+async function chargerEvenements() {
+  let page = 1, tout = [];
+  for (;;) {
+    const lot = await api(`/issues/${TICKET}/comments?per_page=100&page=${page}`);
+    tout = tout.concat(lot);
+    if (lot.length < 100) break;
+    page++;
+  }
+  const ev = [];
+  for (const c of tout) {
+    try {
+      const o = JSON.parse(c.body);
+      if (o && o.v === 1 && o.t && o.n && o.qui) ev.push({ id: c.id, t: o.t, n: String(o.n), qui: String(o.qui), texte: String(o.texte || ""), quand: c.created_at });
+    } catch (e) { /* commentaire écrit à la main : ignoré */ }
+  }
+  ev.sort((a, b) => a.quand < b.quand ? -1 : 1);
+  EVENEMENTS = ev;
+}
+
+async function charger(silencieux) {
+  try {
+    if (!DONNEES) {
+      const txt = await api("/contents/revue-extraits/extraits.json", { headers: { "Accept": "application/vnd.github.raw+json" }, brut: true });
+      DONNEES = JSON.parse(txt);
+    }
+    await chargerEvenements();
+    rendre();
+    const m = $("#maj"); if (m) m.firstChild.textContent = "À jour à " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) + " ";
+  } catch (e) {
+    if (e.message === "acces") afficherInfo("Lien expiré ou incomplet", "Rouvrez la page depuis le dernier lien reçu. Si cela ne marche toujours pas, prévenez JL.");
+    else if (!silencieux) toast("Connexion impossible pour l’instant. Réessayez dans un instant.");
+  }
+}
+
+function afficherInfo(titre, texte) {
+  $("#filtres").classList.add("cache"); $("#btn-moi").classList.add("cache");
+  $("#contenu").replaceChildren(el("div", { class: "info" }, el("h2", {}, titre), el("p", {}, texte)));
+}
+
+const nom = id => { const a = (DONNEES && DONNEES.acteurs || []).find(x => x.id === id); return a ? a.nom : id; };
+const classeStatut = s => ({ "Prête": "p-prete", "À traiter": "p-traiter", "En cours": "p-cours", "Ne pas publier": "p-non" })[s] || "p-traiter";
+const quand = iso => { const d = new Date(iso); return d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" }) + " à " + d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); };
+
+function etat(n) {
+  const evs = EVENEMENTS.filter(e => e.n === n);
+  const dates = evs.filter(e => e.t === "date");
+  return { valid: evs.filter(e => e.t === "valid"), date: dates.length ? dates[dates.length - 1] : null };
+}
+
+/* ---------- rendu ---------- */
+function rendre() {
+  if (!QUI) { choisirIdentite(true); }
+  $("#titre").textContent = DONNEES.titre;
+  document.title = "Revue des extraits · " + DONNEES.titre;
+  const b = $("#btn-moi"); b.classList.remove("cache"); $("#moi-ini").textContent = QUI ? QUI : "Qui suis-je ?";
+  rendreFiltres();
+  const ouvert = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.n : null;
+  const extraits = DONNEES.extraits.filter(x => FILTRE === "Tous" || x.statut === FILTRE);
+  const intro = el("section", { class: "intro" },
+    el("p", {}, DONNEES.sous_titre),
+    el("div", { class: "liens" },
+      el("a", { class: "bouton plein", href: DONNEES.liens.entretien, target: "_blank", rel: "noopener" }, svg(ICONES.film), "Lien vers l’entretien complet"),
+      el("a", { class: "bouton", href: DONNEES.liens.transcription, target: "_blank", rel: "noopener" }, svg(ICONES.doc), "Lien vers la transcription")));
+  const entete = el("div", { class: "entete-table", "aria-hidden": "true" },
+    ["N°", "Vidéo et slogan", "Statut", "Validation ?", "Date de publication", "Remarques et modifications"].map(t => el("div", {}, t)));
+  const liste = el("div", { class: "liste" }, extraits.map(carte));
+  if (!extraits.length) liste.append(el("p", { class: "vide-note", style: "padding:16px" }, "Aucun extrait avec ce statut."));
+  const maj = el("div", { class: "maj", id: "maj" }, "À jour ", el("button", { type: "button", onclick: () => charger() }, "actualiser"));
+  const transv = el("section", { class: "transv" }, el("h2", {}, "Remarques transversales"),
+    DONNEES.transversales.map((t, i) => el("div", { class: "carte-t" }, el("h3", {}, (i + 1) + ". " + t.titre), el("ul", { class: "rems" }, t.remarques.map(r => el("li", {}, r))))));
+  const note = el("p", { class: "note-bas" }, DONNEES.note_liens + " « À construire » : l’extrait n’est pas encore fabriqué.");
+  // garder ce qui est en cours de saisie
+  document.querySelectorAll("textarea[data-n]").forEach(t => BROUILLONS[t.dataset.n] = t.value);
+  $("#contenu").replaceChildren(intro, maj, entete, liste, transv, note);
+  document.querySelectorAll("textarea[data-n]").forEach(t => { if (BROUILLONS[t.dataset.n]) { t.value = BROUILLONS[t.dataset.n]; ajuster(t); t.closest(".saisie").querySelector(".envoyer").disabled = false; } });
+  if (ouvert) { const t = document.querySelector(`textarea[data-n="${ouvert}"]`); if (t) t.focus({ preventScroll: true }); }
+  const h = $("#haut").offsetHeight; document.documentElement.style.setProperty("--haut", h + "px");
+}
+
+function rendreFiltres() {
+  const f = $("#filtres"); f.classList.remove("cache");
+  const comptes = { "Tous": DONNEES.extraits.length };
+  for (const s of DONNEES.statuts) comptes[s] = DONNEES.extraits.filter(x => x.statut === s).length;
+  f.replaceChildren(...Object.entries(comptes).map(([s, nb]) =>
+    el("button", { class: "filtre", type: "button", "aria-pressed": String(FILTRE === s), onclick: () => { FILTRE = s; ecrire(CLES.filtre, s); rendre(); window.scrollTo({ top: 0 }); } }, s, el("b", {}, nb))));
+}
+
+function ajuster(t) { t.style.height = "auto"; t.style.height = Math.min(t.scrollHeight + 2, 180) + "px"; }
+
+function carte(x) {
+  const st = etat(x.n);
+  const dateTexte = st.date ? st.date.texte : x.date;
+  const lien = x.lien
+    ? el("a", { class: "voir", href: x.lien, target: "_blank", rel: "noopener" }, svg(ICONES.play), "Consulter ici")
+    : el("span", { class: "construire" }, "À construire");
+
+  // Date de publication
+  let dateBloc;
+  if (EDITION_DATE === x.n) {
+    const inp = el("input", { type: "text", value: dateTexte || "", placeholder: "Ex. : mardi 24, 19 h", "aria-label": "Date de publication de l’extrait " + x.n, enterkeyhint: "done" });
+    const valider = async () => { const v = inp.value.trim(); EDITION_DATE = null; if (!(await envoyer("date", x.n, v))) rendre(); };
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); valider(); } if (e.key === "Escape") { EDITION_DATE = null; rendre(); } });
+    dateBloc = el("div", { class: "date-form" }, inp, el("button", { class: "petit", type: "button", onclick: valider }, "OK"));
+    setTimeout(() => inp.focus(), 0);
+  } else {
+    dateBloc = el("div", { class: "date-ligne" },
+      el("span", { class: "date-val" + (dateTexte ? "" : " vide") }, dateTexte || "Pas encore fixée"),
+      el("button", { class: "petit", type: "button", onclick: () => { if (!QUI) return choisirIdentite(); EDITION_DATE = x.n; rendre(); }, "aria-label": "Modifier la date de publication de l’extrait " + x.n }, "Modifier"));
+  }
+  const auteurDate = st.date ? el("div", { class: "date-auteur" }, "par " + st.date.qui + ", " + quand(st.date.quand)) : null;
+
+  // Validation ?
+  const notes = st.valid.length
+    ? el("ul", { class: "notes" }, st.valid.map(v => el("li", { class: v.qui === QUI ? "moi-note" : "" },
+        el("span", { class: "ini" }, "[" + v.qui + "] "), v.texte,
+        el("span", { class: "quand" }, quand(v.quand)),
+        v.qui === QUI ? el("button", { class: "suppr", type: "button", title: "Retirer ma remarque", "aria-label": "Retirer ma remarque", onclick: () => retirer(v) }, "×") : null)))
+    : el("p", { class: "vide-note" }, "Pas encore de remarque.");
+  const zone = el("textarea", { rows: "1", "data-n": x.n, placeholder: QUI ? "Votre remarque ou « Validé »" : "Choisissez d’abord qui vous êtes", "aria-label": "Remarque de validation sur l’extrait " + x.n, enterkeyhint: "send" });
+  const bouton = el("button", { class: "envoyer", type: "button", disabled: true, "aria-label": "Envoyer la remarque" }, svg(ICONES.envoi));
+  zone.addEventListener("input", () => { ajuster(zone); bouton.disabled = !zone.value.trim(); BROUILLONS[x.n] = zone.value; });
+  zone.addEventListener("focus", () => { if (!QUI) { zone.blur(); choisirIdentite(); } });
+  zone.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); bouton.click(); } });
+  bouton.addEventListener("click", async () => {
+    const t = zone.value.trim(); if (!t) return;
+    bouton.disabled = true;
+    const ok = await envoyer("valid", x.n, t);
+    if (ok) { BROUILLONS[x.n] = ""; } else bouton.disabled = false;
+  });
+  const prefixe = el("div", { class: "prefixe" }, QUI ? "Signée automatiquement [" + QUI + "]" : "");
+
+  const remarques = el("details", { class: "rem bloc", open: window.matchMedia("(min-width:1000px)").matches || x.remarques.length <= 2 },
+    el("summary", {}, el("div", { class: "etiquette mobile" }, el("span", {}, "Remarques et modifications ", el("span", { class: "nb" }, x.remarques.length)), el("span", { class: "fl", "aria-hidden": "true" }, "▾"))),
+    el("ul", { class: "rems" }, x.remarques.map(r => el("li", {}, r))));
+
+  return el("article", { class: "extrait", id: "x" + x.n },
+    el("div", { class: "num" }, x.n),
+    el("div", { class: "video-cell" },
+      el("div", { class: "qui" }, x.qui),
+      el("div", { class: "slogan" }, "— " + x.slogan),
+      el("div", { class: "lien" }, lien)),
+    el("div", { class: "statut" }, el("span", { class: "pastille " + classeStatut(x.statut) }, x.statut)),
+    el("div", { class: "valid bloc" }, el("div", { class: "etiquette mobile" }, el("span", {}, "Validation ? ", el("span", { class: "nb" }, st.valid.length))), notes, el("div", { class: "saisie" }, zone, bouton), prefixe),
+    el("div", { class: "date bloc" }, el("div", { class: "etiquette mobile" }, el("span", {}, "Date de publication")), dateBloc, auteurDate),
+    remarques);
+}
+
+/* ---------- écriture ---------- */
+async function envoyer(t, n, texte) {
+  if (!QUI) { choisirIdentite(); return false; }
+  try {
+    await api(`/issues/${TICKET}/comments`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body: JSON.stringify({ v: 1, t, n, qui: QUI, texte }) }) });
+    toast(t === "date" ? "Date enregistrée" : "Remarque enregistrée, signée [" + QUI + "]");
+    await chargerEvenements(); rendre();
+    return true;
+  } catch (e) {
+    toast(e.message === "acces" ? "Enregistrement refusé : le lien a peut-être expiré." : "Pas de connexion : rien n’a été enregistré. Réessayez.");
+    return false;
+  }
+}
+async function retirer(v) {
+  if (!confirm("Retirer votre remarque ?")) return;
+  try { await api(`/issues/comments/${v.id}`, { method: "DELETE" }); toast("Remarque retirée"); await chargerEvenements(); rendre(); }
+  catch (e) { toast("Impossible de retirer la remarque pour l’instant."); }
+}
+
+/* ---------- identité ---------- */
+function choisirIdentite(premiere) {
+  if (document.querySelector(".voile")) return;
+  const acteurs = (DONNEES && DONNEES.acteurs) || [{ id: "MS", nom: "Michèle" }, { id: "BO", nom: "Béatrice" }, { id: "JR", nom: "Jonathan" }, { id: "SA", nom: "Simon" }, { id: "JLB", nom: "JL" }];
+  const fermer = () => voile.remove();
+  const voile = el("div", { class: "voile", role: "dialog", "aria-modal": "true", "aria-labelledby": "t-qui", onclick: e => { if (e.target === voile && QUI) fermer(); } },
+    el("div", { class: "fenetre" },
+      el("h2", { id: "t-qui" }, premiere ? "Bonjour ! Qui êtes-vous ?" : "Qui êtes-vous ?"),
+      el("p", {}, "Vos remarques seront signées de vos initiales. Ce choix reste sur ce téléphone ou cet ordinateur."),
+      el("div", { class: "choix" }, acteurs.map(a => el("button", { type: "button", "aria-pressed": String(QUI === a.id), onclick: () => { QUI = a.id; ecrire(CLES.qui, a.id); fermer(); rendre(); toast("Bonjour " + a.nom + " !"); } }, el("b", {}, a.id), el("span", {}, a.nom))))));
+  document.body.append(voile);
+  const b = voile.querySelector("button"); if (b) b.focus();
+}
+$("#btn-moi").addEventListener("click", () => choisirIdentite(false));
+
+/* ---------- démarrage ---------- */
+if (!CLE) afficherInfo("Ouvrez la page depuis le lien reçu", "Cette page de travail du collectif ne s’ouvre qu’avec le lien envoyé par JL.");
+else {
+  charger();
+  setInterval(() => { const a = document.activeElement; if (document.visibilityState === "visible" && !document.querySelector(".voile") && EDITION_DATE === null && !(a && a.tagName === "TEXTAREA" && a.value)) charger(true); }, 45000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && DONNEES) charger(true); });
+}
+</script>
+</body>
+</html>
