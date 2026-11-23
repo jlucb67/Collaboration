@@ -48,6 +48,23 @@ main{max-width:1500px;margin:0 auto;padding:12px 12px calc(40px + env(safe-area-
 .lien-haut:hover{text-decoration:underline;text-underline-offset:3px}
 .lien-haut svg{width:13px;height:13px;flex:none;opacity:.85}
 
+/* ---------- programmation de la semaine ---------- */
+.semaine{flex-basis:100%;margin-top:10px}
+.semaine-titre{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris-clair);font-weight:600;margin:0 0 6px}
+.jours{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.jour{min-width:0;background:var(--carte);border:1px solid #EFEDEA;border-radius:10px;padding:6px 2px 8px;text-align:center;min-height:86px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.jour .js{font-size:10.5px;color:var(--gris-clair)}
+.jour .jn{font:400 17px/1.1 var(--serif);color:var(--encre);margin-bottom:4px}
+.jour.passe{opacity:.55}
+.jour.auj{border-color:var(--carmin);background:var(--carmin-pale)}
+.jour.auj .js,.jour.auj .jn{color:var(--carmin)}
+.puces{display:flex;flex-direction:column;align-items:center;gap:4px}
+.puce{border:1px solid #E2CDD0;background:#fff;color:var(--carmin);border-radius:999px;min-width:30px;height:22px;padding:0 6px;font:400 13px/20px var(--serif);cursor:pointer}
+.puce.aconf{border-style:dashed;border-color:var(--gris-clair)}
+.jour .rien{color:#D6D3CF;font-size:12px;margin-top:2px}
+.semaine-note{font-size:11px;color:var(--gris-clair);margin-top:5px}
+.extrait.flash{box-shadow:0 0 0 2px var(--carmin),var(--ombre);transition:box-shadow .3s}
+
 /* ---------- extraits : 1) numéro, nom, message, photo  2) statut  3) date ---------- */
 .entete-table{display:none}
 .liste{display:flex;flex-direction:column;gap:12px}
@@ -137,7 +154,10 @@ details.rem[open] summary .fl{transform:rotate(180deg)}
   header{padding-left:24px;padding-right:24px}
   h1{font-size:21px}
   main{padding:14px 24px 50px}
-  .intro{flex-wrap:nowrap;padding:2px 4px 8px}
+  .intro{padding:2px 4px 8px}
+  .jours{max-width:780px}
+  .jour{min-height:72px;padding:8px 6px}
+  .puces{flex-direction:row;flex-wrap:wrap;justify-content:center}
   .intro p{flex-basis:auto}
   .entete-table,.extrait{display:grid;grid-template-columns:68px minmax(320px,1.7fr) 150px 140px minmax(280px,1.4fr) minmax(250px,1.2fr);grid-template-areas:"num video statut date valid rem";column-gap:0}
   .entete-table{position:sticky;top:var(--haut,96px);z-index:10;background:var(--carte);color:var(--gris-clair);border:1px solid #EFEDEA;border-bottom:1px solid var(--filet);border-radius:12px 12px 0 0;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
@@ -293,6 +313,41 @@ const quand = iso => { const d = new Date(iso); return d.toLocaleDateString("fr-
 const initiales = p => p.split(/\s+/).map(m => m.charAt(0)).join("").slice(0, 2).toUpperCase();
 const photo = p => PHOTOS[p] ? el("img", { class: "photo", src: PHOTOS[p], alt: p }) : el("span", { class: "photo mono", "aria-hidden": "true" }, initiales(p));
 
+/* Programmation de la semaine (dimanche → samedi), déduite des dates de publication :
+   le premier nombre de la date donne le jour ; un « ? » signifie « à confirmer ». */
+function jourDe(texte) { const m = String(texte || "").match(/(\d{1,2})/); const j = m ? parseInt(m[1], 10) : 0; return j >= 1 && j <= 31 ? j : null; }
+function semaine() {
+  const auj = new Date(); auj.setHours(0, 0, 0, 0);
+  const debut = new Date(auj); debut.setDate(auj.getDate() - auj.getDay());
+  const jours = [...Array(7)].map((_, i) => { const d = new Date(debut); d.setDate(debut.getDate() + i); return { d, extraits: [] }; });
+  let aconf = false;
+  for (const x of DONNEES.extraits) {
+    const st = etat(x.n); const t = st.date ? st.date.texte : x.date;
+    const j = jourDe(t); if (!j) continue;
+    const cible = jours.find(o => o.d.getDate() === j);
+    if (cible) { const q = /\?/.test(t); aconf = aconf || q; cible.extraits.push({ n: x.n, q }); }
+  }
+  return el("div", { class: "semaine" },
+    el("p", { class: "semaine-titre" }, "Programmation de la semaine"),
+    el("div", { class: "jours" }, jours.map(o => {
+      const cls = "jour" + (o.d.getTime() === auj.getTime() ? " auj" : o.d < auj ? " passe" : "");
+      o.extraits.sort((a, b) => a.n < b.n ? -1 : 1);
+      return el("div", { class: cls },
+        el("span", { class: "js" }, o.d.toLocaleDateString("fr-FR", { weekday: "short" })),
+        el("span", { class: "jn" }, o.d.getDate()),
+        o.extraits.length
+          ? el("div", { class: "puces" }, o.extraits.map(e => el("button", { class: "puce" + (e.q ? " aconf" : ""), type: "button", title: "Aller à l’extrait " + e.n, onclick: () => allerA(e.n) }, e.n)))
+          : el("span", { class: "rien", "aria-hidden": "true" }, "—"));
+    })),
+    aconf ? el("p", { class: "semaine-note" }, "En pointillés : date à confirmer.") : null);
+}
+function allerA(n) {
+  if (FILTRE !== "Tous" && !document.getElementById("x" + n)) { FILTRE = "Tous"; ecrire(CLES.filtre, FILTRE); rendre(); }
+  const c = document.getElementById("x" + n); if (!c) return;
+  window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - $("#haut").offsetHeight - 10, behavior: "smooth" });
+  c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1400);
+}
+
 function etat(n) {
   const evs = EVENEMENTS.filter(e => e.n === n);
   const dates = evs.filter(e => e.t === "date");
@@ -312,7 +367,8 @@ function rendre() {
     el("p", {}, DONNEES.sous_titre),
     el("div", { class: "liens" },
       el("a", { class: "lien-haut", href: DONNEES.liens.entretien, target: "_blank", rel: "noopener" }, svg(ICONES.film), "Entretien complet"),
-      el("a", { class: "lien-haut", href: DONNEES.liens.transcription, target: "_blank", rel: "noopener" }, svg(ICONES.doc), "Transcription")));
+      el("a", { class: "lien-haut", href: DONNEES.liens.transcription, target: "_blank", rel: "noopener" }, svg(ICONES.doc), "Transcription")),
+    semaine());
   const entete = el("div", { class: "entete-table", "aria-hidden": "true" },
     ["N°", "Extrait", "Statut", "Publication", "Validation ?", "Remarques et modifications"].map(t => el("div", {}, t)));
   const liste = el("div", { class: "liste" }, extraits.map(carte));
