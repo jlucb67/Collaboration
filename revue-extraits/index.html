@@ -50,31 +50,34 @@ main{max-width:1500px;margin:0 auto;padding:14px 12px calc(40px + env(safe-area-
 /* ---------- extraits ---------- */
 .entete-table{display:none}
 .liste{display:flex;flex-direction:column;gap:12px}
-.extrait{background:var(--carte);border-radius:var(--rayon);box-shadow:var(--ombre);padding:14px 14px 12px;display:grid;
-  grid-template-columns:auto 1fr auto;grid-template-areas:"num qui statut" "slogan slogan slogan" "lien lien lien" "date date date" "valid valid valid" "rem rem rem";column-gap:10px}
-.num{grid-area:num;font:800 22px/1 Georgia,serif;color:var(--carmin);padding-top:2px}
-.qui{grid-area:qui;font-weight:700;font-size:16px;align-self:center}
+.extrait{background:var(--carte);border-radius:var(--rayon);box-shadow:inset 6px 0 0 var(--c,var(--filet)),var(--ombre);padding:14px 14px 12px 20px;display:grid;
+  grid-template-columns:1fr auto;grid-template-areas:"statut num" "date date" "qui qui" "slogan slogan" "lien lien" "valid valid" "rem rem";column-gap:10px}
+.s-prete{--c:var(--vert)}.s-traiter{--c:var(--bleu)}.s-cours{--c:var(--ambre)}.s-non{--c:var(--rouge)}
+.num{grid-area:num;font:700 14px/1 system-ui,sans-serif;color:var(--gris);align-self:center;white-space:nowrap}
+.qui{grid-area:qui;font-weight:700;font-size:15px}
 .statut{grid-area:statut;align-self:center}
-.pastille{display:inline-block;border-radius:8px;padding:4px 9px;font-size:13px;font-weight:700;white-space:nowrap}
+.pastille{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 14px 7px 12px;font-size:16px;font-weight:800;white-space:nowrap}
+.pastille::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor;flex:none}
 .p-prete{background:var(--vert-pale);color:var(--vert)}
 .p-traiter{background:var(--bleu-pale);color:var(--bleu)}
 .p-cours{background:var(--ambre-pale);color:var(--ambre)}
 .p-non{background:var(--rouge-pale);color:var(--rouge)}
-.slogan{grid-area:slogan;margin:8px 0 10px;font-size:16px;line-height:1.4}
-.lien{grid-area:lien;margin-bottom:12px}
-.voir{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-decoration:none;background:var(--carmin);color:#fff;border-radius:12px;padding:11px 14px;font-weight:700;min-height:46px}
-.voir svg{width:18px;height:18px}
-.construire{display:flex;align-items:center;justify-content:center;width:100%;border:1.5px dashed var(--gris-clair);color:var(--gris);border-radius:12px;padding:10px 14px;font-weight:600;min-height:46px}
+.slogan{grid-area:slogan;margin:3px 0 4px;font-size:15px;line-height:1.4;color:#33353B}
+.lien{grid-area:lien;margin-bottom:8px}
+.voir{display:inline-flex;align-items:center;gap:6px;color:var(--carmin);font-size:14px;font-weight:600;min-height:36px;text-underline-offset:3px}
+.voir svg{width:13px;height:13px}
+.construire{display:inline-block;margin:8px 0 6px;border:1px dashed var(--gris-clair);color:var(--gris);border-radius:6px;padding:2px 8px;font-size:13px;font-weight:600}
 .bloc{border-top:1px solid var(--filet);padding-top:10px;margin-top:2px}
 .date{grid-area:date}.valid{grid-area:valid}.rem{grid-area:rem}
 .etiquette{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);font-weight:700;margin-bottom:6px}
 .etiquette .nb{background:var(--fond);border-radius:999px;padding:1px 8px;letter-spacing:0;text-transform:none;font-weight:600}
-.date-ligne{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.date-val{flex:1;min-width:0;font-weight:600;font-size:16px}
-.date-val.vide{color:var(--gris-clair);font-weight:400}
+.extrait>.date{border-top:0;padding:10px 0 12px;margin:0 0 10px;border-bottom:1px solid var(--filet)}
+.date-ligne{display:flex;align-items:center;gap:8px}
+.date-val{flex:1;min-width:0;font-weight:800;font-size:19px;line-height:1.25}
+.date-val.vide{color:var(--gris-clair);font-weight:500;font-size:16px}
 .date-auteur{font-size:12px;color:var(--gris-clair)}
 .petit{border:1px solid var(--filet);background:var(--carte);border-radius:10px;padding:7px 11px;font-size:14px;min-height:38px;cursor:pointer}
-.date-form{display:flex;gap:8px;margin-bottom:10px}
+.date-form{display:flex;gap:8px}
 .date-form input{flex:1;min-width:0;border:1.5px solid var(--carmin);border-radius:10px;padding:9px 11px;font-size:16px;min-height:44px;background:#fff}
 ul.notes{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}
 ul.notes li{background:var(--fond);border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.4;position:relative}
@@ -136,16 +139,20 @@ details.rem[open] summary .fl{transform:rotate(180deg)}
   .entete-table{position:sticky;top:var(--haut,108px);z-index:10;background:var(--encre);color:#fff;border-radius:12px 12px 0 0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
   .entete-table div{padding:11px 12px}
   .liste{gap:0;background:var(--carte);border-radius:0 0 12px 12px;box-shadow:var(--ombre);overflow:hidden}
-  .extrait{border-radius:0;box-shadow:none;padding:0;border-top:1px solid var(--filet)}
+  .extrait{border-radius:0;box-shadow:inset 5px 0 0 var(--c,transparent);padding:0;border-top:1px solid var(--filet)}
   .extrait:nth-child(even){background:#FAFAFB}
   .extrait>*{padding:13px 12px;border-left:1px solid var(--filet)}
-  .extrait>.num{border-left:0;padding-top:14px}
+  .extrait>.num{border-left:0;padding:16px 8px 13px 17px}
   .video-cell{grid-area:video;display:flex;flex-direction:column}
   .qui,.slogan,.lien{grid-area:auto}
-  .num{font-size:20px}
+  .num{font-size:16px;color:var(--encre);align-self:auto}
   .slogan{margin:4px 0 8px;font-size:14.5px}
   .lien{margin:0}
-  .voir,.construire{width:auto;display:inline-flex;min-height:36px;padding:6px 12px;font-size:14px;border-radius:9px}
+  .voir{min-height:28px}
+  .construire{margin:2px 0 0}
+  .extrait>.date{border-bottom:0;margin:0;padding:13px 12px}
+  .pastille{font-size:14.5px;padding:6px 12px 6px 10px}
+  .date-val{font-size:17px}
   .statut{align-self:stretch}
   .qui{align-self:auto}
   .date-ligne{flex-direction:column;align-items:flex-start;gap:6px}
@@ -162,7 +169,7 @@ details.rem[open] summary .fl{transform:rotate(180deg)}
   .voile{align-items:center}
   .fenetre{border-radius:20px}
 }
-@media (max-width:999px){ .video-cell{display:contents} }
+@media (max-width:999px){ .video-cell{display:contents} .num::before{content:"N° "} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -366,7 +373,7 @@ function carte(x) {
     el("summary", {}, el("div", { class: "etiquette mobile" }, el("span", {}, "Remarques et modifications ", el("span", { class: "nb" }, x.remarques.length)), el("span", { class: "fl", "aria-hidden": "true" }, "▾"))),
     el("ul", { class: "rems" }, x.remarques.map(r => el("li", {}, r))));
 
-  return el("article", { class: "extrait", id: "x" + x.n },
+  return el("article", { class: "extrait " + classeStatut(x.statut).replace("p-", "s-"), id: "x" + x.n },
     el("div", { class: "num" }, x.n),
     el("div", { class: "video-cell" },
       el("div", { class: "qui" }, x.qui),
