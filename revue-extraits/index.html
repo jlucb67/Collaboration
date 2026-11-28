@@ -63,6 +63,7 @@ main{max-width:1500px;margin:0 auto;padding:12px 12px calc(40px + env(safe-area-
 .puce.aconf{border-style:dashed;border-color:var(--gris-clair)}
 .jour .rien{color:#D6D3CF;font-size:12px;margin-top:2px}
 .semaine-note{font-size:11px;color:var(--gris-clair);margin-top:5px}
+.extrait.publiee{background:#EDECEA}.extrait.publiee>*{opacity:.5}.extrait.publiee .photo{filter:grayscale(1)}
 .extrait.flash{box-shadow:0 0 0 2px var(--carmin),var(--ombre);transition:box-shadow .3s}
 
 /* ---------- extraits : 1) numéro, nom, message, photo  2) statut  3) date ---------- */
@@ -313,22 +314,31 @@ const quand = iso => { const d = new Date(iso); return d.toLocaleDateString("fr-
 const initiales = p => p.split(/\s+/).map(m => m.charAt(0)).join("").slice(0, 2).toUpperCase();
 const photo = p => PHOTOS[p] ? el("img", { class: "photo", src: PHOTOS[p], alt: p }) : el("span", { class: "photo mono", "aria-hidden": "true" }, initiales(p));
 
-/* Programmation de la semaine (dimanche → samedi), déduite des dates de publication :
+/* Programmation sur 7 jours glissants (3 jours avant aujourd’hui, aujourd’hui, 3 jours après ; JL, 28/11), déduite des dates de publication :
    le premier nombre de la date donne le jour ; un « ? » signifie « à confirmer ». */
 function jourDe(texte) { const m = String(texte || "").match(/(\d{1,2})/); const j = m ? parseInt(m[1], 10) : 0; return j >= 1 && j <= 31 ? j : null; }
+/* Date complète d’une date de publication : le jour du mois le plus proche d’aujourd’hui (ce mois-ci, le précédent ou le suivant). */
+function dateComplete(texte) {
+  const j = jourDe(texte); if (!j) return null;
+  const auj = new Date(); auj.setHours(0, 0, 0, 0);
+  const c = [-1, 0, 1].map(k => new Date(auj.getFullYear(), auj.getMonth() + k, j)).filter(d => d.getDate() === j);
+  return c.sort((a, b) => Math.abs(a - auj) - Math.abs(b - auj))[0] || null;
+}
+/* Extrait déjà publié : sa date de publication est passée (avant aujourd’hui). */
+function dejaPublie(texte) { const d = dateComplete(texte); const auj = new Date(); auj.setHours(0, 0, 0, 0); return !!d && d < auj; }
 function semaine() {
   const auj = new Date(); auj.setHours(0, 0, 0, 0);
-  const debut = new Date(auj); debut.setDate(auj.getDate() - auj.getDay());
+  const debut = new Date(auj); debut.setDate(auj.getDate() - 3);
   const jours = [...Array(7)].map((_, i) => { const d = new Date(debut); d.setDate(debut.getDate() + i); return { d, extraits: [] }; });
   let aconf = false;
   for (const x of DONNEES.extraits) {
     const st = etat(x.n); const t = st.date ? st.date.texte : x.date;
-    const j = jourDe(t); if (!j) continue;
-    const cible = jours.find(o => o.d.getDate() === j);
+    const d = dateComplete(t); if (!d) continue;
+    const cible = jours.find(o => o.d.getTime() === d.getTime());
     if (cible) { const q = /\?/.test(t); aconf = aconf || q; cible.extraits.push({ n: x.n, q }); }
   }
   return el("div", { class: "semaine" },
-    el("p", { class: "semaine-titre" }, "Programmation de la semaine"),
+    el("p", { class: "semaine-titre" }, "Programmation des extraits"),
     el("div", { class: "jours" }, jours.map(o => {
       const cls = "jour" + (o.d.getTime() === auj.getTime() ? " auj" : o.d < auj ? " passe" : "");
       o.extraits.sort((a, b) => a.n < b.n ? -1 : 1);
@@ -413,7 +423,7 @@ function carte(x) {
   } else {
     dateBloc = el("div", { class: "date-ligne" },
       el("span", { class: "date-lab" }, "Publication"),
-      el("span", { class: "date-val" + (dateTexte ? "" : " vide") }, dateTexte || "pas encore fixée"),
+      el("span", { class: "date-val" + (dateTexte ? "" : " vide") }, dateTexte ? dateTexte + (dejaPublie(dateTexte) ? " · publiée" : "") : "pas encore fixée"),
       el("button", { class: "modif", type: "button", onclick: () => { if (!QUI) return choisirIdentite(); EDITION_DATE = x.n; rendre(); }, "aria-label": "Modifier la date de publication de l’extrait " + x.n }, "Modifier"));
   }
   const auteurDate = st.date ? el("div", { class: "date-auteur" }, "fixée par " + st.date.qui + ", " + quand(st.date.quand)) : null;
@@ -441,7 +451,7 @@ function carte(x) {
     el("summary", {}, el("div", { class: "etiquette mobile" }, el("span", {}, "Remarques et modifications ", el("span", { class: "nb" }, x.remarques.length)), el("span", { class: "fl", "aria-hidden": "true" }, "▾"))),
     el("ul", { class: "rems" }, x.remarques.map(r => el("li", {}, r))));
 
-  return el("article", { class: "extrait", id: "x" + x.n },
+  return el("article", { class: "extrait" + (dejaPublie(dateTexte) ? " publiee" : ""), id: "x" + x.n },
     // 1) numéro, nom, message, photo
     el("div", { class: "num" }, x.n),
     el("div", { class: "video-cell" },
